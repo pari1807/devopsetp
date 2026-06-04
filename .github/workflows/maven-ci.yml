@@ -7,17 +7,17 @@ on:
 
 jobs:
   test:
-    name: Test on Java ${{ matrix.java }}
+    name: Test on Java 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         java: [11, 17, 21]
     steps:
-      - name: Checkout source for Java ${{ matrix.java }}
+      - name: Checkout source for Java 
         uses: actions/checkout@v4
 
-      - name: Set up Java ${{ matrix.java }}
+      - name: Set up Java 
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -28,11 +28,11 @@ jobs:
         id: maven-test
         run: mvn test
 
-      - name: Report result for Java ${{ matrix.java }}
+      - name: Report result for Java 
         if: always()
         run: |
           if [ "${{ steps.maven-test.outcome }}" = "success" ]; then
-            echo "Java ${{ matrix.java }}: PASS"
+            echo "PASS"
           else
-            echo "Java ${{ matrix.java }}: FAIL"
+            echo "FAIL"
           fi
