@@ -1,20 +1,20 @@
-name:  CI/CD
+name: CI/CD
 
 on:
   push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
-    name: Test on Java 
+    name: Test on Java ${{ matrix.java }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         java: [11, 17, 21]
     steps:
-      - name: Check out code
+      - name: Checkout source for Java ${{ matrix.java }}
         uses: actions/checkout@v4
 
       - name: Set up Java ${{ matrix.java }}
@@ -25,4 +25,14 @@ jobs:
           cache: maven
 
       - name: Run Maven tests
+        id: maven-test
         run: mvn test
+
+      - name: Report result for Java ${{ matrix.java }}
+        if: always()
+        run: |
+          if [ "${{ steps.maven-test.outcome }}" = "success" ]; then
+            echo "Java ${{ matrix.java }}: PASS"
+          else
+            echo "Java ${{ matrix.java }}: FAIL"
+          fi
